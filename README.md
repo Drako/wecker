@@ -15,6 +15,7 @@ communication with all kinds of peripherals.
 - Talking to the builtin LED of the Pico W (read/write)
 - Talking to the RGB LED on the breadboard kit (write-only)
 - Talking to the Beeper on the breadboard kit (read/write)
+- Talking to the Joystick (read-only)
 
 Most likely I won't be using all the features for the final result.
 

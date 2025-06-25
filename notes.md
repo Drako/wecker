@@ -2,6 +2,15 @@
 
 This is just a list of things I found.
 
+## Power Supply
+
+Obviously, powering through micro USB works fine.
+Powering through VSYS doesn't deliver enough power and results in the RGB LED not lighting up.
+Powering through VBUS works, but I'm not sure if that's the right thing to do.
+
+Also, I consider adding UART output, so I can still see the log output when not connected via micro USB.
+I might check out the debug pins as well.
+
 ## Mutexes
 
 Pico Mutexes (`mutex_t` and `recursive_mutex_t`) use spin locks (`spin_lock_t`).

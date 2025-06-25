@@ -6,7 +6,7 @@ This is an alarm (German "Wecker") built around the
 [Raspberry Pi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#picow-technical-specification)
 and the [Pico Breadboard Kit](https://wiki.52pi.com/index.php?title=EP-0172).
 
-It is mostly a learning project to get comfortable with micro controller programming and
+It is mostly a learning project to get comfortable with microcontroller programming and
 communication with all kinds of peripherals.
 
 **What works so far:**

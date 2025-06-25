@@ -1,6 +1,7 @@
 #include "on_board_led.hxx"
 #include "beeper.hxx"
 #include "rgb_led.hxx"
+#include "joystick.hxx"
 
 #include <cstdio>
 
@@ -40,6 +41,14 @@ void init_rgb_led() {
     led.off();
 }
 
+void init_joystick() {
+    auto &joystick = Joystick::get();
+    auto const pos = joystick.get_position();
+    auto const raw_pos = joystick.get_raw_position();
+    std::printf("Joystick position: %d, %d\n", pos.x, pos.y);
+    std::printf("Joystick position (raw): %d, %d\n", raw_pos.x, raw_pos.y);
+}
+
 [[noreturn]] int main() {
     stdio_init_all();
     sleep_ms(1'000u);
@@ -50,6 +59,7 @@ void init_rgb_led() {
     init_onboard_led();
     init_beeper();
     init_rgb_led();
+    init_joystick();
 
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());

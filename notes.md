@@ -12,7 +12,7 @@ There is a fixed number of these:
 ```
 
 So one would think one can only have 32 mutexes, but wrong, because, when initializing a mutex,
-only striped spin locks are used, which are the mutexes with the numbers 16 to 23, leaving us with 8 mutexes.
+only striped spin locks are used, which are the spin locks with the numbers 16 to 23, leaving us with 8 mutexes.
 
 But it doesn't stop there: when initializing a mutex, the spin locks will just wrap around, meaning the
 nineth mutex and the first one will technically be the same mutex.

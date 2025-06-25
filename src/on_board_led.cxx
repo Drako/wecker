@@ -6,9 +6,7 @@
 #include <pico/cyw43_arch.h>
 
 OnBoardLed::OnBoardLed() : mutex_{} {
-    std::puts(".............");
     cyw43_working_ = (cyw43_arch_init() == 0);
-
     if (!cyw43_working_) {
         std::puts(" - CYW43 LED... FAIL");
     } else {

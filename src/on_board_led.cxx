@@ -16,11 +16,6 @@ OnBoardLed::OnBoardLed() : mutex_{} {
     }
 }
 
-OnBoardLed &OnBoardLed::get() {
-    static OnBoardLed instance_{};
-    return instance_;
-}
-
 // ReSharper disable once CppMemberFunctionMayBeConst
 void OnBoardLed::set_state(bool const state) {
     if (!cyw43_working_) { return; }

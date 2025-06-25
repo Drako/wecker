@@ -1,25 +1,22 @@
 #pragma once
 
 #include "color.hxx"
+#include "singleton.hxx"
 
 #include <pico/sync.h>
 
-class RgbLed final {
+class RgbLed final : public Singleton<RgbLed> {
 public:
-    static RgbLed &get();
-
     void set_color(Color const &color);
 
     void off() {
         set_color(colors::BLACK);
     }
 
-    RgbLed(RgbLed const &) = delete;
-
-    RgbLed &operator=(RgbLed const &) = delete;
-
 private:
     RgbLed();
+
+    friend class Singleton;
 
     bool ws2812_working_;
     mutable mutex_t mutex_;

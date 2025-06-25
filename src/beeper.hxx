@@ -1,13 +1,13 @@
 #pragma once
 
+#include "singleton.hxx"
+
 #include <pico/sync.h>
 #include <pico/types.h>
 
-class Beeper final {
+class Beeper final : public Singleton<Beeper> {
 public:
     constexpr static uint PIN = 13u;
-
-    static Beeper &get();
 
     void set_state(bool state);
 
@@ -33,12 +33,10 @@ public:
         return !get_state();
     }
 
-    Beeper(Beeper const &) = delete;
-
-    Beeper &operator=(Beeper const &) = delete;
-
 private:
     Beeper();
+
+    friend class Singleton;
 
     mutable mutex_t mutex_;
 };

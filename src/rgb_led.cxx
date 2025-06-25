@@ -17,11 +17,6 @@ RgbLed::RgbLed(): mutex_{} {
     }
 }
 
-RgbLed &RgbLed::get() {
-    static RgbLed instance_{};
-    return instance_;
-}
-
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RgbLed::set_color(Color const &color) {
     if (!ws2812_working_) { return; }

@@ -1,11 +1,11 @@
 #pragma once
 
+#include "singleton.hxx"
+
 #include <pico/sync.h>
 
-class OnBoardLed final {
+class OnBoardLed final : public Singleton<OnBoardLed> {
 public:
-    static OnBoardLed &get();
-
     void set_state(bool state);
 
     bool get_state() const;
@@ -30,12 +30,10 @@ public:
         return !get_state();
     }
 
-    OnBoardLed(OnBoardLed const &) = delete;
-
-    OnBoardLed &operator=(OnBoardLed const &) = delete;
-
 private:
     OnBoardLed();
+
+    friend class Singleton;
 
     bool cyw43_working_;
     mutable mutex_t mutex_;

@@ -11,11 +11,6 @@ Beeper::Beeper() : mutex_{} {
     std::puts(" - Beeper... OK");
 }
 
-Beeper &Beeper::get() {
-    static Beeper instance_{};
-    return instance_;
-}
-
 // ReSharper disable once CppMemberFunctionMayBeConst
 void Beeper::set_state(bool const state) {
     mutex_enter_blocking(&mutex_);

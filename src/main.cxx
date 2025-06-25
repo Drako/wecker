@@ -8,12 +8,6 @@
 #include <pico/stdio.h>
 #include <pico/multicore.h>
 
-[[noreturn]] void core1_main() {
-    std::printf("Core %d: I'm alive!\n", get_core_num());
-
-    for (;;);
-}
-
 void init_onboard_led() {
     auto &led = OnBoardLed::get();
     led.on();
@@ -43,10 +37,16 @@ void init_rgb_led() {
 
 void init_joystick() {
     auto &joystick = Joystick::get();
-    auto const pos = joystick.get_position();
-    auto const raw_pos = joystick.get_raw_position();
-    std::printf("Joystick position: %d, %d\n", pos.x, pos.y);
-    std::printf("Joystick position (raw): %d, %d\n", raw_pos.x, raw_pos.y);
+    joystick.update();
+}
+
+[[noreturn]] void core1_main() {
+    std::printf("Core %d: I'm alive!\n", get_core_num());
+
+    for (;;) {
+        Joystick::get().update();
+        sleep_ms(100u);
+    }
 }
 
 [[noreturn]] int main() {
@@ -64,5 +64,12 @@ void init_joystick() {
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
-    for (;;);
+    for (;;) {
+        sleep_ms(1'000u);
+        auto &joystick = Joystick::get();
+        auto const raw_pos = joystick.get_raw_position();
+        const auto [x, y] = Joystick::from_raw(raw_pos);
+        std::printf("Joystick position: %d, %d\n", x, y);
+        std::printf("Joystick position (raw): %d, %d\n", raw_pos.x, raw_pos.y);
+    }
 }

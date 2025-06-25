@@ -1,4 +1,5 @@
 #include "on_board_led.hxx"
+#include "lock_guard.hxx"
 
 #include <cstdio>
 
@@ -20,16 +21,13 @@ OnBoardLed::OnBoardLed() : mutex_{} {
 void OnBoardLed::set_state(bool const state) {
     if (!cyw43_working_) { return; }
 
-    mutex_enter_blocking(&mutex_);
+    LockGuard lock{mutex_};
     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, state);
-    mutex_exit(&mutex_);
 }
 
 bool OnBoardLed::get_state() const {
     if (!cyw43_working_) { return false; }
 
-    mutex_enter_blocking(&mutex_);
-    bool const result = cyw43_arch_gpio_get(CYW43_WL_GPIO_LED_PIN);
-    mutex_exit(&mutex_);
-    return result;
+    LockGuard lock{mutex_};
+    return cyw43_arch_gpio_get(CYW43_WL_GPIO_LED_PIN);
 }

@@ -1,4 +1,5 @@
 #include "rgb_led.hxx"
+#include "lock_guard.hxx"
 
 #include <cstdio>
 
@@ -21,7 +22,6 @@ RgbLed::RgbLed(): mutex_{} {
 void RgbLed::set_color(Color const &color) {
     if (!ws2812_working_) { return; }
 
-    mutex_enter_blocking(&mutex_);
+    LockGuard lock{mutex_};
     pio_sm_put_blocking(pio0, 0, color.to_ws2812());
-    mutex_exit(&mutex_);
 }

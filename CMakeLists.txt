@@ -19,6 +19,7 @@ add_executable(wecker
         src/color.hxx
         src/rgb_led.cxx src/rgb_led.hxx
         src/singleton.hxx
+        src/lock_guard.hxx
 )
 
 pico_generate_pio_header(wecker "${CMAKE_CURRENT_LIST_DIR}/ws2812.pio" OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")

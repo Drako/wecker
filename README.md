@@ -18,7 +18,7 @@ communication with all kinds of peripherals.
 
 Most likely I won't be using all the features for the final result.
 
-Current plan:
+**Current plan:**
 
 - Get the touch screen running to have a configuration UI for setting the current time and the wake-up time.
 - Use the RTC (apparently there is one on the Pico W itself, not sure about persistence though...) to keep track of

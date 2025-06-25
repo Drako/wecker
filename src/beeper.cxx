@@ -1,4 +1,5 @@
 #include "beeper.hxx"
+#include "lock_guard.hxx"
 
 #include <cstdio>
 
@@ -13,14 +14,11 @@ Beeper::Beeper() : mutex_{} {
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void Beeper::set_state(bool const state) {
-    mutex_enter_blocking(&mutex_);
+    LockGuard lock{mutex_};
     gpio_put(PIN, state);
-    mutex_exit(&mutex_);
 }
 
 bool Beeper::get_state() const {
-    mutex_enter_blocking(&mutex_);
-    bool const result = gpio_get(PIN);
-    mutex_exit(&mutex_);
-    return result;
+    LockGuard lock{mutex_};
+    return gpio_get(PIN);
 }

@@ -21,3 +21,12 @@ Looking at the different macros in `spin_lock.h` it turns out that you can recon
 and that these are used to have reserved spin locks for different kinds of applications.
 Not having an OS, but being the OS myself, I can technically increase the number of available mutexes,
 should I need to.
+
+## Joystick
+
+The Joystick gives ADC values from 0 to 4095, but actually it is not possible to push it physically so far
+that 0 or 4095 would be read. So I tried to optimize the calculation of the x/y position, but I head to realize
+that the range is not exactly stable. Basically, pushing the stick to an outermost position would yield one value,
+and doing the same again later might result in an even bigger/lower value, meaning the range needs to be extended again.
+
+So in the end, I went back to the value range and calculation found in the bread board kit example.

@@ -9,7 +9,8 @@
 
 class Joystick final : public Singleton<Joystick> {
 public:
-    constexpr static int MAX_VALUE = 128;
+    constexpr static int BAR_WIDTH = 40;
+    constexpr static std::uint16_t ADC_MAX = 4096u;
 
     Vec2<std::uint16_t> get_raw_position() const;
 

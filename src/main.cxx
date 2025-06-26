@@ -3,6 +3,7 @@
 #include "rgb_led.hxx"
 #include "joystick.hxx"
 #include "led.hxx"
+#include "button.hxx"
 
 #include <cstdio>
 
@@ -54,6 +55,26 @@ void init_leds() {
     led17.off();
 }
 
+void link_button_with_led(uint const button_pin, uint const led_pin) {
+    auto const button = Button::get(button_pin);
+    auto const led = Led::get(led_pin);
+    if (!button || !led) { return; }
+
+    button->set_on_press([button_pin, led] {
+        std::printf("Button GP%d pressed!\n", button_pin);
+        led->on();
+    });
+    button->set_on_release([button_pin, led] {
+        std::printf("Button GP%d released!\n", button_pin);
+        led->off();
+    });
+}
+
+void init_buttons() {
+    link_button_with_led(14, 16);
+    link_button_with_led(15, 17);
+}
+
 [[noreturn]] void core1_main() {
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
@@ -75,6 +96,7 @@ void init_leds() {
     init_rgb_led();
     init_joystick();
     init_leds();
+    init_buttons();
 
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());

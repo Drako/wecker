@@ -41,5 +41,5 @@ public:
 private:
     explicit Led(uint pin);
 
-    uint pin_;
+    uint const pin_;
 };

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 cmake_policy(VERSION 3.27)
 
+set(PICO_CXX_ENABLE_RTTI 1)
 include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 project(wecker VERSION 0.1.0.0)
@@ -23,6 +24,7 @@ add_executable(wecker
         src/joystick.cxx src/joystick.hxx
         src/vec2.hxx
         src/led.cxx src/led.hxx
+        src/button.cxx src/button.hxx
 )
 
 pico_generate_pio_header(wecker "${CMAKE_CURRENT_LIST_DIR}/ws2812.pio" OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -31,7 +33,7 @@ pico_enable_stdio_usb(wecker 1)
 
 target_include_directories(wecker PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(wecker PRIVATE
-        pico_stdlib pico_stdio pico_multicore pico_sync pico_cyw43_arch_none pico_time pico_rand
-        hardware_gpio hardware_pwm hardware_rtc hardware_pio hardware_adc
+        pico_stdlib pico_stdio pico_multicore pico_sync pico_cyw43_arch_none pico_time pico_rand pico_standard_link
+        hardware_gpio hardware_pwm hardware_rtc hardware_pio hardware_adc hardware_irq
 )
 pico_add_extra_outputs(wecker)

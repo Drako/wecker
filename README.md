@@ -17,6 +17,7 @@ communication with all kinds of peripherals.
 - Talking to the Beeper on the breadboard kit (read/write)
 - Talking to the Joystick (read-only)
 - Talking to the simple LEDs at GP16 and GP17 (read/write)
+- Talking to the simple Buttons at GP14 and GP15 via IRQs (read-only)
 
 Most likely I won't be using all the features for the final result.
 
@@ -29,3 +30,6 @@ Most likely I won't be using all the features for the final result.
 - Use one of the buttons or the touch screen to get it to shut up.
 
 Everything else is just for experimentation and learning.
+
+Currently, I'm considering actually using the Wi-Fi chip to initialize the RTC with NTP.
+That might be a bit more complicated, though.

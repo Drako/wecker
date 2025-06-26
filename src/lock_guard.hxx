@@ -41,5 +41,5 @@ public:
     }
 
 private:
-    MutexT *mutex_;
+    MutexT *const mutex_;
 };

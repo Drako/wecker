@@ -22,10 +22,11 @@ add_executable(wecker
         src/lock_guard.hxx
         src/joystick.cxx src/joystick.hxx
         src/vec2.hxx
+        src/led.cxx src/led.hxx
 )
 
 pico_generate_pio_header(wecker "${CMAKE_CURRENT_LIST_DIR}/ws2812.pio" OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-pico_enable_stdio_uart(wecker 0)
+pico_enable_stdio_uart(wecker 1)
 pico_enable_stdio_usb(wecker 1)
 
 target_include_directories(wecker PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")

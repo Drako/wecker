@@ -16,6 +16,7 @@ communication with all kinds of peripherals.
 - Talking to the RGB LED on the breadboard kit (write-only)
 - Talking to the Beeper on the breadboard kit (read/write)
 - Talking to the Joystick (read-only)
+- Talking to the simple LEDs at GP16 and GP17 (read/write)
 
 Most likely I won't be using all the features for the final result.
 

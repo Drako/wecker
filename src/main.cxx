@@ -2,6 +2,7 @@
 #include "beeper.hxx"
 #include "rgb_led.hxx"
 #include "joystick.hxx"
+#include "led.hxx"
 
 #include <cstdio>
 
@@ -40,6 +41,19 @@ void init_joystick() {
     joystick.update();
 }
 
+void init_leds() {
+    auto &led16 = Led::get_gp16();
+    auto &led17 = Led::get_gp17();
+
+    for (int n = 0; n < 4; ++n) {
+        led16.set_state((n & 1) == 1);
+        led17.set_state((n & 2) == 2);
+        sleep_ms(200u);
+    }
+    led16.off();
+    led17.off();
+}
+
 [[noreturn]] void core1_main() {
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
@@ -60,6 +74,7 @@ void init_joystick() {
     init_beeper();
     init_rgb_led();
     init_joystick();
+    init_leds();
 
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());

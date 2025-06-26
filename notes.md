@@ -39,3 +39,8 @@ that the range is not exactly stable. Basically, pushing the stick to an outermo
 and doing the same again later might result in an even bigger/lower value, meaning the range needs to be extended again.
 
 So in the end, I went back to the value range and calculation found in the bread board kit example.
+
+# LVGL
+
+There have been some major changes between LVGL 8 and 9. The pico_breakboard_kit comes with LVGL 8.
+As such, I'm using that as well for now. I might upgrade to LVGL 9, once I have a better understanding of it.

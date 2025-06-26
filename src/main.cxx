@@ -10,6 +10,10 @@
 #include <pico/stdio.h>
 #include <pico/multicore.h>
 
+#include <lvgl.h>
+#include "../lv_port_disp.h"
+#include "../lv_port_indev.h"
+
 void init_onboard_led() {
     auto &led = OnBoardLed::get();
     led.on();
@@ -75,11 +79,32 @@ void init_buttons() {
     link_button_with_led(15, 17);
 }
 
+void init_ui() {
+    lv_obj_clean(lv_scr_act());
+
+    lv_obj_t *beep_btn = lv_btn_create(lv_scr_act());
+    lv_obj_add_event_cb(beep_btn, [](lv_event_t *const evt) {
+        if (lv_event_get_code(evt) == LV_EVENT_VALUE_CHANGED) {
+            auto const beeper = static_cast<Beeper *>(evt->user_data);
+            auto const button = lv_event_get_target(evt);
+            beeper->set_state((button->state & LV_STATE_CHECKED) != 0);
+        }
+    }, LV_EVENT_ALL, &Beeper::get());
+    lv_obj_align(beep_btn, LV_ALIGN_TOP_MID, 0, 40);
+    lv_obj_add_flag(beep_btn, LV_OBJ_FLAG_CHECKABLE);
+    lv_obj_set_height(beep_btn, LV_SIZE_CONTENT);
+
+    lv_obj_t *label = lv_label_create(beep_btn);
+    lv_label_set_text(label, "Beep");
+    lv_obj_center(label);
+}
+
 [[noreturn]] void core1_main() {
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
     for (;;) {
         Joystick::get().update();
+        lv_timer_handler();
         sleep_ms(100u);
     }
 }
@@ -98,15 +123,17 @@ void init_buttons() {
     init_leds();
     init_buttons();
 
+    lv_init();
+    lv_port_disp_init();
+    lv_port_indev_init();
+
+    init_ui();
+
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
     for (;;) {
-        sleep_ms(1'000u);
-        auto &joystick = Joystick::get();
-        auto const raw_pos = joystick.get_raw_position();
-        const auto [x, y] = Joystick::from_raw(raw_pos);
-        std::printf("Joystick position: %d, %d\n", x, y);
-        std::printf("Joystick position (raw): %d, %d\n", raw_pos.x, raw_pos.y);
+        sleep_ms(1u);
+        lv_tick_inc(1);
     }
 }

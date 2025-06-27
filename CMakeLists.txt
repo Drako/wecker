@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
 cmake_policy(VERSION 3.27)
 
+set(PICO_BOARD pico_w CACHE STRING "Board type")
+
 set(PICO_CXX_ENABLE_RTTI 1)
 include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
 
@@ -31,6 +33,8 @@ add_executable(wecker
         # these are copied from the pico_breadboard_kit
         lv_port_disp.c lv_port_disp.h
         lv_port_indev.c lv_port_indev.h
+        # for SD card access
+        hw_config.c
 )
 
 pico_generate_pio_header(wecker "${CMAKE_CURRENT_LIST_DIR}/ws2812.pio" OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -42,6 +46,6 @@ target_include_directories(wecker PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(wecker PRIVATE
         pico_stdlib pico_stdio pico_multicore pico_sync pico_cyw43_arch_none pico_time pico_rand pico_standard_link
         hardware_gpio hardware_pwm hardware_rtc hardware_pio hardware_adc hardware_irq hardware_i2c hardware_spi hardware_dma
-        lvgl
+        lvgl no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
 )
 pico_add_extra_outputs(wecker)

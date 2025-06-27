@@ -17,6 +17,10 @@
 #include "../lv_port_disp.h"
 #include "../lv_port_indev.h"
 
+#include <hw_config.h>
+#include <f_util.h>
+#include <ff.h>
+
 void init_onboard_led() {
     auto &led = OnBoardLed::get();
     led.on();
@@ -137,6 +141,32 @@ void init_ui() {
     lv_obj_center(datetime_label);
 }
 
+void read_sd_card() {
+    sd_init_driver();
+
+    FATFS fs{};
+    if (FRESULT const result = f_mount(&fs, "0:", 1); result != FR_OK) {
+        std::printf(" - SD Card... FAIL (f_mount: %s)\n", FRESULT_str(result));
+        return;
+    }
+
+    DIR root_dir{};
+    if (FRESULT const result = f_opendir(&root_dir, "/"); result != FR_OK) {
+        std::printf(" - SD Card... FAIL (f_opendir: %s)\n", FRESULT_str(result));
+        return;
+    }
+
+    FILINFO file_info{};
+    while (f_readdir(&root_dir, &file_info) == FR_OK && file_info.fname[0] != 0) {
+        std::printf("%s: %c\n", file_info.fname, file_info.fattrib & AM_DIR ? 'd' : 'f');
+    }
+
+    f_closedir(&root_dir);
+    f_unmount("");
+
+    std::puts(" - SD Card... OK");
+}
+
 [[noreturn]] void core1_main() {
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
@@ -168,6 +198,8 @@ void init_ui() {
     init_joystick();
     init_leds();
     init_buttons();
+
+    read_sd_card();
 
     lv_init();
     lv_port_disp_init();

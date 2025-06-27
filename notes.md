@@ -40,7 +40,13 @@ and doing the same again later might result in an even bigger/lower value, meani
 
 So in the end, I went back to the value range and calculation found in the bread board kit example.
 
-# LVGL
+## LVGL
 
 There have been some major changes between LVGL 8 and 9. The pico_breakboard_kit comes with LVGL 8.
 As such, I'm using that as well for now. I might upgrade to LVGL 9, once I have a better understanding of it.
+
+## RTC
+
+To get the real time clock running, `rtc_init()` is not enough. One must also set an initial date time using
+`rtc_set_datetime()`, and it must be a valid. For now, I set it to the UNIX epoch. However, maybe I can do a little startup sequence,
+where I connect to Wi-Fi, grab the current date time from a time-server and then shut down the network stuff again.

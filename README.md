@@ -19,8 +19,9 @@ communication with all kinds of peripherals.
 - Talking to the simple LEDs at GP16 and GP17 (read/write)
 - Talking to the simple Buttons at GP14 and GP15 via IRQs (read-only)
 - Showing UI on the display using LVGL
+- Settings and reading the RTC
 
-Most likely I won't be using all the features for the final result.
+Most likely, I won't be using all the features for the final result.
 
 **Current plan:**
 

@@ -9,6 +9,9 @@
 
 #include <pico/stdio.h>
 #include <pico/multicore.h>
+#include <pico/time.h>
+
+#include <hardware/rtc.h>
 
 #include <lvgl.h>
 #include "../lv_port_disp.h"
@@ -79,10 +82,36 @@ void init_buttons() {
     link_button_with_led(15, 17);
 }
 
-void init_ui() {
-    lv_obj_clean(lv_scr_act());
+static lv_obj_t *datetime_label = nullptr;
+static datetime_t previous_datetime{};
 
-    lv_obj_t *beep_btn = lv_btn_create(lv_scr_act());
+void update_datetime_label() {
+    if (!datetime_label) return;
+
+    datetime_t dt{};
+    if (!rtc_get_datetime(&dt)) return;
+
+    if (dt.year != previous_datetime.year
+        || dt.month != previous_datetime.month
+        || dt.day != previous_datetime.day
+        || dt.hour != previous_datetime.hour
+        || dt.min != previous_datetime.min
+        || dt.sec != previous_datetime.sec
+    ) {
+        previous_datetime = dt;
+        lv_label_set_text_fmt(datetime_label, "%02d.%02d.%04d %02d:%02d:%02d",
+                              dt.day, dt.month, dt.year,
+                              dt.hour, dt.min, dt.sec
+        );
+    }
+}
+
+void init_ui() {
+    auto const screen = lv_scr_act();
+
+    lv_obj_clean(screen);
+
+    lv_obj_t *beep_btn = lv_btn_create(screen);
     lv_obj_add_event_cb(beep_btn, [](lv_event_t *const evt) {
         if (lv_event_get_code(evt) == LV_EVENT_VALUE_CHANGED) {
             auto const beeper = static_cast<Beeper *>(evt->user_data);
@@ -97,6 +126,15 @@ void init_ui() {
     lv_obj_t *label = lv_label_create(beep_btn);
     lv_label_set_text(label, "Beep");
     lv_obj_center(label);
+
+    static lv_style_t label_style;
+    lv_style_init(&label_style);
+    lv_style_set_text_font(&label_style, &lv_font_montserrat_32);
+
+    datetime_label = lv_label_create(screen);
+    lv_obj_add_style(datetime_label, &label_style, LV_PART_MAIN);
+    update_datetime_label();
+    lv_obj_center(datetime_label);
 }
 
 [[noreturn]] void core1_main() {
@@ -116,6 +154,14 @@ void init_ui() {
     std::printf("Welcome to Wecker-OS!\n");
     std::printf("Initializing...\n");
 
+    constexpr datetime_t epoch{1970, 1, 1, 4, 0, 0, 0};
+    rtc_init();
+    rtc_set_datetime(&epoch);
+    while (!rtc_running()) {
+        sleep_ms(100u);
+    }
+    std::puts(" - RTC... OK");
+
     init_onboard_led();
     init_beeper();
     init_rgb_led();
@@ -132,8 +178,13 @@ void init_ui() {
     multicore_launch_core1(&core1_main);
     std::printf("Core %d: I'm alive!\n", get_core_num());
 
+    absolute_time_t previous = get_absolute_time();
     for (;;) {
-        sleep_ms(1u);
-        lv_tick_inc(1);
+        absolute_time_t const start = get_absolute_time();
+        auto const elapsed = static_cast<std::uint32_t>(absolute_time_diff_us(previous, start) / 1000ull);
+        previous = start;
+        update_datetime_label();
+        lv_tick_inc(elapsed);
+        sleep_ms(50u);
     }
 }
